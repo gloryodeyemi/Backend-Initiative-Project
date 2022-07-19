@@ -1,9 +1,8 @@
 package com.example.scabackend.controllers;
 
 import com.example.scabackend.models.Users;
-import com.example.scabackend.services.UsersServices;
+import com.example.scabackend.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +12,7 @@ import java.util.List;
 @RequestMapping("users")
 public class UsersController {
     @Autowired
-    UsersServices usersServices;
+    UsersService usersServices;
 
 //    @PostMapping()
 //    public ResponseEntity<Users> createUser(@RequestBody Users user) {

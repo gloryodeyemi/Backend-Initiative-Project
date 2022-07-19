@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class UsersServices {
+public class UsersService {
     @Autowired
     UsersRepository usersRepository;
 
@@ -35,7 +35,7 @@ public class UsersServices {
                 user.setPassword(password);
                 userList.add(usersRepository.save(user));
             } else {
-                throw new AccountException("Password error-Password does not match!");
+//                throw new AccountException("Password error-Password does not match!");
             }
         }
         log.info("user list::{}", userList);
