@@ -5,10 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,19 +21,22 @@ public class Movies {
 
     private String title;
     private String description;
-    private String genre;
+
+    @OneToMany
+    private List<Genre> genre;
+
     private String director;
     private String writer;
     private String producer;
     private String ratings;
     private String duration;
     private String maturityRating;
-    private String movieQuality;
+    private MovieQuality movieQuality;
+    private String casts;
     private Double rentalFee;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
-//    private ArrayList<String> casts;
 
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
