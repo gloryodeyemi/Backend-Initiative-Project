@@ -9,34 +9,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
-public class Movies {
+public class Rentals {
     @Id
     @GeneratedValue
     private Long id;
 
-    private String title;
-    private String description;
-    private String genre;
-    private String director;
-    private String writer;
-    private String producer;
-    private String ratings;
-    private String duration;
-    private String maturityRating;
-    private String movieQuality;
-    private Double rentalFee;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate releaseDate;
-//    private ArrayList<String> casts;
+    private Long movieId;
+    private Long userId;
 
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
