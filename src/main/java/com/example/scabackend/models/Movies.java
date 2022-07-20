@@ -25,8 +25,13 @@ public class Movies {
     private String title;
     private String description;
     private String genre;
+    private String director;
+    private String writer;
     private String producer;
     private String ratings;
+    private String duration;
+    private String maturityRating;
+    private String movieQuality;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
