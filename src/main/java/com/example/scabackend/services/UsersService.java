@@ -29,7 +29,7 @@ public class UsersService {
     public ResponseEntity<List<Users>> createUsers(List<Users> users){
         List<Users> userList = new ArrayList<>();
         for (Users user: users){
-            log.info("user::{}", user);
+//            log.info("user::{}", user);
             String password = passwordEncoder.encode(user.getPassword());
             if (user.getPassword().equals(user.getConfirmPassword())) {
                 user.setPassword(password);
@@ -38,7 +38,7 @@ public class UsersService {
 //                throw new AccountException("Password error-Password does not match!");
             }
         }
-        log.info("user list::{}", userList);
+//        log.info("user list::{}", userList);
         return ResponseEntity.ok(userList);
     }
 

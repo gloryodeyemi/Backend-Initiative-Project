@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class Genre {
+public class MaturityRatings {
     @Id
     @GeneratedValue
     private Long id;

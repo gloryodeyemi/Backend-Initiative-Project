@@ -25,18 +25,22 @@ public class Movies {
     @OneToMany
     private List<Genre> genre;
 
+    private Long maturityRatingId;
+
     private String director;
     private String writer;
     private String producer;
-    private String ratings;
+//    private String ratings;
     private String duration;
-    private String maturityRating;
     private MovieQuality movieQuality;
     private String casts;
     private Double rentalFee;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
+
+    @OneToMany
+    private List<Reviews> reviews;
 
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

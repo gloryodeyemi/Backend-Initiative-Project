@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class UsersController {
 //    }
 
     @PostMapping()
-    public ResponseEntity<List<Users>> createUsers(@RequestBody List<Users> users) {
+    public ResponseEntity<List<Users>> createUsers(@Valid @RequestBody List<Users> users) {
         return usersServices.createUsers(users);
     }
 
