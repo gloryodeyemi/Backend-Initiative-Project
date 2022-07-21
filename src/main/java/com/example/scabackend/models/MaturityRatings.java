@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,7 +19,10 @@ public class MaturityRatings {
     @GeneratedValue
     private Long id;
 
+    @NotBlank(message = "Genre name cannot be blank")
+    @Column(unique=true)
     private String name;
+
     private String description;
 
     @CreationTimestamp

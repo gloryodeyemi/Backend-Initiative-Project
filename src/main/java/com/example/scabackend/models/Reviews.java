@@ -6,6 +6,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,8 +18,15 @@ public class Reviews {
     @GeneratedValue
     private Long id;
 
+    @NotNull(message = "Movie id is mandatory")
+    @Positive(message = "Id must be positive")
     private Long movieId;
+
+    @NotNull(message = "User id is mandatory")
+    @Positive(message = "Id must be positive")
     private Long userId;
+
+    @NotBlank(message = "Review cannot be blank")
     private String review;
 
     @CreationTimestamp

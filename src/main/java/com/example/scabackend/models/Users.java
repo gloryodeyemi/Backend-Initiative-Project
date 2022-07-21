@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -20,21 +21,24 @@ public class Users {
     @GeneratedValue
     private Long id;
 
-    @NotBlank(message = "Validation error-First name cannot be blank")
+    @NotBlank(message = "Val-First name cannot be blank")
     private String firstName;
 
     @NotBlank(message = "Last name cannot be blank")
     private String lastName;
 
+    @Column(unique = true)
     @NotNull(message = "Email address is mandatory")
     @Email(message = "Email should be valid")
     private String emailAddress;
 
+    @Column(unique = true)
     @NotBlank(message = "Phone number is mandatory")
     @Size(min = 8, max = 20, message
             = "Phone number must be between 8 and 20 characters")
     private String phoneNumber;
 
+    @Column(unique = true)
     @NotBlank(message = "Username cannot be blank")
     @Size(min = 6, max = 20, message
             = "Username must be between 6 and 20 characters")

@@ -5,10 +5,13 @@ import com.example.scabackend.models.Users;
 import com.example.scabackend.services.MoviesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("movies")
 public class MovieController {
@@ -16,7 +19,7 @@ public class MovieController {
     MoviesService moviesService;
 
     @PostMapping
-    public ResponseEntity<List<Movies>> createMovies(@RequestBody List<Movies> movies) {
+    public ResponseEntity<List<Movies>> createMovies(@Valid @RequestBody List<Movies> movies) {
         return moviesService.save(movies);
     }
 

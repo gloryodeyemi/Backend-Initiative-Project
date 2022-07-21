@@ -4,11 +4,13 @@ import com.example.scabackend.models.Users;
 import com.example.scabackend.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("users")
 public class UsersController {
@@ -41,7 +43,7 @@ public class UsersController {
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<Users> updateUser(@PathVariable Long id, @RequestBody Users user) {
+    public ResponseEntity<Users> updateUser(@PathVariable Long id, @Valid @RequestBody Users user) {
         return usersServices.updateUser(id, user);
     }
 }

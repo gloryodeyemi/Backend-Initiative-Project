@@ -4,10 +4,13 @@ import com.example.scabackend.models.Rentals;
 import com.example.scabackend.services.RentalsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("rentals")
 public class RentalController {
@@ -15,7 +18,7 @@ public class RentalController {
     RentalsService rentalsService;
 
     @PostMapping
-    public ResponseEntity<List<Rentals>> createRentals(@RequestBody List<Rentals> rentals) {
+    public ResponseEntity<List<Rentals>> createRentals(@Valid @RequestBody List<Rentals> rentals) {
         return rentalsService.save(rentals);
     }
 
