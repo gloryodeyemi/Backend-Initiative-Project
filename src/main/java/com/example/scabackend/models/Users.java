@@ -21,38 +21,38 @@ public class Users {
     @GeneratedValue
     private Long id;
 
-    @NotBlank(message = "Val-First name cannot be blank")
+    @NotBlank(message = "Validation error-First name cannot be blank")
     private String firstName;
 
-    @NotBlank(message = "Last name cannot be blank")
+    @NotBlank(message = "Validation error-Last name cannot be blank")
     private String lastName;
 
     @Column(unique = true)
-    @NotNull(message = "Email address is mandatory")
-    @Email(message = "Email should be valid")
+    @NotNull(message = "Validation error-Email address is mandatory")
+    @Email(message = "Validation error-Email should be valid")
     private String emailAddress;
 
     @Column(unique = true)
-    @NotBlank(message = "Phone number is mandatory")
+    @NotBlank(message = "Validation error-Phone number is mandatory")
     @Size(min = 8, max = 20, message
-            = "Phone number must be between 8 and 20 characters")
+            = "Validation error-Phone number must be between 8 and 20 characters")
     private String phoneNumber;
 
     @Column(unique = true)
-    @NotBlank(message = "Username cannot be blank")
+    @NotBlank(message = "Validation error-Username cannot be blank")
     @Size(min = 6, max = 20, message
-            = "Username must be between 6 and 20 characters")
+            = "Validation error-Username must be between 6 and 20 characters")
     private String username;
 
-    @NotNull(message = "Password is mandatory")
+    @NotNull(message = "Validation error-Password is mandatory")
     @Size(min = 8, message
-            = "Password cannot be less than 8 characters")
+            = "Validation error-Password cannot be less than 8 characters")
     private String password;
 
     @Transient
-    @NotNull(message = "Confirm password is mandatory")
+    @NotNull(message = "Validation error-Confirm password is mandatory")
     @Size(min = 8, message
-            = "Password cannot be less than 8 characters")
+            = "Validation error-Password cannot be less than 8 characters")
     private String confirmPassword;
 
     @CreationTimestamp

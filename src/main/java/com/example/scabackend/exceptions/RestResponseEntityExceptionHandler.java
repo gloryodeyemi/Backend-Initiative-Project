@@ -1,5 +1,7 @@
 package com.example.scabackend.exceptions;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +14,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
+@Slf4j
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({AccountException.class, ConstraintViolationException.class})
+    @ExceptionHandler({AccountException.class, ConstraintViolationException.class, DataIntegrityViolationException.class})
     public ResponseEntity<Object> handleUserNotAllowedException(final Exception ex, final WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage();
+        log.info("ex::{}", ex);
         String[] parts = ex.getMessage().split("-");
         errorMessage.setMessage(parts[1]);
         errorMessage.setTitle(parts[0]);
