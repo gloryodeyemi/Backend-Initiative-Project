@@ -4,6 +4,7 @@ import com.example.scabackend.models.Users;
 import com.example.scabackend.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,16 @@ public class UsersController {
 //    public ResponseEntity<Users> createUser(@RequestBody Users user) {
 //        return usersServices.createUser(user);
 //    }
+
+    @GetMapping("/login")
+    public String login(Model model) {
+        return "login";
+    }
+
+    @GetMapping("/user")
+    public String userIndex() {
+        return "user/index";
+    }
 
     @PostMapping()
     public ResponseEntity<List<Users>> createUsers(@Valid @RequestBody List<Users> users) {

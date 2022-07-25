@@ -1,11 +1,9 @@
 package com.example.scabackend.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -22,7 +20,7 @@ public class Users {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private Provider provider;
+    private AuthenticationProvider authProvider;
 
     @NotBlank(message = "Validation error-First name cannot be blank")
     private String firstName;

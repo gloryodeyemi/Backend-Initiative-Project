@@ -1,6 +1,6 @@
 package com.example.scabackend.models;
 
-public enum Provider {
+public enum AuthenticationProvider {
     LOCAL,
     FACEBOOK
 }

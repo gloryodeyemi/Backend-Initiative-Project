@@ -1,7 +1,6 @@
 package com.example.scabackend.services;
 
-import com.example.scabackend.exceptions.AccountException;
-import com.example.scabackend.models.Provider;
+import com.example.scabackend.models.AuthenticationProvider;
 import com.example.scabackend.models.Users;
 import com.example.scabackend.repositories.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,7 @@ public class UsersService {
         if (existUser == null) {
             Users newUser = new Users();
             newUser.setUsername(username);
-            newUser.setProvider(Provider.FACEBOOK);
+            newUser.setAuthProvider(AuthenticationProvider.FACEBOOK);
 //            newUser.setEnabled(true);
             usersRepository.save(newUser);
         }

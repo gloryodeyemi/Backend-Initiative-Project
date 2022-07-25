@@ -1,4 +1,4 @@
-package com.example.scabackend.models;
+package com.example.scabackend.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -31,5 +31,9 @@ public class CustomOAuth2User implements OAuth2User {
 
     public String getEmail() {
         return oAuth2User.<String>getAttribute("email");
+    }
+
+    public String getFullName() {
+        return oAuth2User.getAttribute("name");
     }
 }
