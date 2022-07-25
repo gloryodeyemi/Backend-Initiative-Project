@@ -30,11 +30,10 @@ public class CustomUserDetailService implements UserDetailsService {
         if (user.isEmpty()) {
             System.out.println("user is empty");
             throw new RuntimeException(username + " not found");
-//            throw new UsernameNotFoundException("Error-Invalid username or password.");
+//            throw new UsernameNotFoundException(username + " not found");
         }
         System.out.println();
         log.info("user: " + user);
-//        User.withUserDetails(user.getEmailAddress(), user.getPassword());
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
         User theUser = new User(user.get().getEmailAddress(), user.get().getPassword(), grantedAuthorities);;
         log.info("theUser: " + theUser);

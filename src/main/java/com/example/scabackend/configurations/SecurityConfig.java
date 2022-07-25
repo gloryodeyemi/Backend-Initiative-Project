@@ -36,6 +36,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private CustomOAuth2UserService oAuth2UserService;
+
+    @Autowired
+    private UsersService usersService;
+
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -92,12 +99,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     }
                 });
     }
-
-    @Autowired
-    private CustomOAuth2UserService oAuth2UserService;
-
-    @Autowired
-    private UsersService usersService;
-
 
 }
