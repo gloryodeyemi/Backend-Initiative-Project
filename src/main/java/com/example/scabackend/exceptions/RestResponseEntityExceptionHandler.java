@@ -20,7 +20,7 @@ import javax.validation.ConstraintViolationException;
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({AccountException.class, ConstraintViolationException.class, DataIntegrityViolationException.class, OAuth2AuthenticationException.class,
-            UsernameNotFoundException.class})
+            UsernameNotFoundException.class, Exception.class})
     public ResponseEntity<Object> handleUserNotAllowedException(final Exception ex, final WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage();
 //        log.info("ex::{}", ex);

@@ -6,6 +6,7 @@ import com.example.scabackend.repositories.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,12 +29,15 @@ public class CustomUserDetailService implements UserDetailsService {
         Optional<Users> user = usersRepository.findByEmailAddress(username);
         if (user.isEmpty()) {
             System.out.println("user is empty");
-            throw new RuntimeException("Account not found");
+            throw new RuntimeException(username + " not found");
 //            throw new UsernameNotFoundException("Error-Invalid username or password.");
         }
         System.out.println();
         log.info("user: " + user);
 //        User.withUserDetails(user.getEmailAddress(), user.getPassword());
-        return new  User(user.get().getEmailAddress(), user.get().getPassword(), new ArrayList<>());
+        List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
+        User theUser = new User(user.get().getEmailAddress(), user.get().getPassword(), grantedAuthorities);;
+        log.info("theUser: " + theUser);
+        return theUser;
     }
 }

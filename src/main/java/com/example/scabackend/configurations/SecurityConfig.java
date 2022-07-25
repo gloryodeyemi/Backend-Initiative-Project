@@ -4,6 +4,7 @@ import com.example.scabackend.security.CustomOAuth2User;
 import com.example.scabackend.services.CustomOAuth2UserService;
 import com.example.scabackend.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -12,9 +13,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -27,25 +29,18 @@ import java.io.IOException;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    @Autowired
-//    private DataSource dataSource;
-
+    @Qualifier("customUserDetailService")
     @Autowired
-    private UserDetailsService userDetailsService;
+    UserDetailsService userDetailsService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-//    @Bean
-//    public DefaultOAuth2UserService defaultOAuth2UserService() {
-//        return new CustomOAuth2UserService();
-//    }
-
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
-        authProvider.setUserDetailsService(userDetailsService());
+        System.out.println("Am here" + userDetailsService());
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder);
 
         return authProvider;
@@ -54,18 +49,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider());
-        auth.userDetailsService(userDetailsService());
-//        auth.inMemoryAuthentication(
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/oauth2/**").permitAll()
                 .antMatchers("/", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-//                .authenticationProvider(authProvider)
                 .userDetailsService(userDetailsService)
                 .formLogin()
                 .loginPage("/login")
@@ -74,7 +66,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter("password")
                 .permitAll()
                 .and()
-//                .and().httpBasic().and()
                 .oauth2Login()
                 .loginPage("/login.html")
                 .userInfoEndpoint()
@@ -90,6 +81,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         usersService.processOAuthPostLogin(oauthUser.getEmail());
 
                         response.sendRedirect("/list");
+
+                        System.out.println("I got here");
+                    }
+                })
+                .failureHandler(new AuthenticationFailureHandler() {
+                    @Override
+                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                        System.out.println("Failed");
                     }
                 });
     }
