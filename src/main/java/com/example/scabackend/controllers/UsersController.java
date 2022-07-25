@@ -28,12 +28,17 @@ public class UsersController {
         return "login";
     }
 
-    @GetMapping("/user")
+    @GetMapping("/")
     public String userIndex() {
-        return "user/index";
+        return "index";
     }
 
-    @PostMapping()
+    @GetMapping("/logout_user")
+    public String logoutPage(){
+        return "redirect:/login";
+    }
+
+    @PostMapping("/create")
     public ResponseEntity<List<Users>> createUsers(@Valid @RequestBody List<Users> users) {
         return usersServices.createUsers(users);
     }

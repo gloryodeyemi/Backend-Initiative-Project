@@ -19,7 +19,7 @@
             <p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
         </div>
 
-        <div th:if="${param.logout}">
+        <div th:if="${param.logout_user}">
             <p class="text-warning">You have been logged out.</p>
         </div>
 

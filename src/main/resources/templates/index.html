@@ -5,6 +5,12 @@
     <title>Home</title>
 </head>
 <body>
-<p>Logged in successfully!</p>
+<h3> Hello ${}, </h3>
+<h4>Welcome to Spring client </h4>
+<form action="#" th:action="@{/logout_user}" method="post">
+    <button class="btn btn-sm btn-primary btn-block" type="submit">Logout</button>
+</form>
+<!--<a href="${}">Click here to logout</a>-->
+<!--<p>Logged in successfully!</p>-->
 </body>
 </html>
