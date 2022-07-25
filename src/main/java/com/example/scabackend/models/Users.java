@@ -21,6 +21,9 @@ public class Users {
     @GeneratedValue
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
+
     @NotBlank(message = "Validation error-First name cannot be blank")
     private String firstName;
 
