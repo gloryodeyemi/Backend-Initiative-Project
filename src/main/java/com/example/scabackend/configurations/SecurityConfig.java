@@ -1,5 +1,6 @@
 package com.example.scabackend.configurations;
 
+import com.example.scabackend.models.Users;
 import com.example.scabackend.security.CustomOAuth2User;
 import com.example.scabackend.services.CustomOAuth2UserService;
 import com.example.scabackend.services.UsersService;
@@ -46,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        System.out.println("Am here" + userDetailsService());
+//        System.out.println("Am here" + userDetailsService());
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder);
 
@@ -61,8 +62,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/", "/login").permitAll()
+        http.csrf().disable().antMatcher("/**").authorizeRequests()
+                .antMatchers("/", "/login", "/oauth2/**").permitAll()
+                .antMatchers("/index").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .userDetailsService(userDetailsService)
@@ -76,11 +78,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutUrl("/logout_user")
-                .logoutSuccessUrl("/login.html").invalidateHttpSession(true)
+                .logoutSuccessUrl("/login").invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID").deleteCookies("remember-me")
                 .and()
-                .oauth2Login()
-                .loginPage("/login.html")
+                .oauth2Login().permitAll()
+                .loginPage("/login")
                 .userInfoEndpoint()
                 .userService(oAuth2UserService)
                 .and()
@@ -91,11 +93,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                         CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
 
-                        usersService.processOAuthPostLogin(oauthUser.getEmail());
+                        usersService.processOAuthPostLogin(oauthUser.getEmail(), authentication.getName(), oauthUser);
 
-                        response.sendRedirect("/list");
+                        response.sendRedirect("/index");
 
                         System.out.println("I got here");
+
                     }
                 })
                 .failureHandler(new AuthenticationFailureHandler() {

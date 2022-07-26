@@ -13,6 +13,17 @@
 <!--    <div>-->
 <!--        <img class="img-fluid" th:src="/@{/images/ShopmeAdminBig.png}" />-->
 <!--    </div>-->
+    <div>
+        <h4>
+            <a class="btn btn-lg btn-secondary fab fa-facebook" th:href="@{/oauth2/authorization/facebook}">Login with Facebook</a>
+            <!--                <a th:href="@{https://graph.facebook.com/v14.0/oauth/}">Login with Facebook</a>-->
+        </h4>
+        <p style="text-align: center">OR</p>
+        <h4>
+            <a class="btn btn-lg btn-secondary fab fa-google" th:href="@{/oauth2/authorization/google}">Login with Google</a>
+       </h4>
+        <p style="text-align: center">OR</p>
+    </div>
     <form th:action="@{/login}" method="post" style="max-width: 350px; margin: 0 auto;">
 
         <div th:if="${param.error}">
@@ -25,10 +36,6 @@
 
         <div class="border border-secondary p-3 rounded">
             <p>Access to Spring Control Panel</p>
-            <p>
-                <a th:href="@{/oauth2/authorization/facebook}">Login with Facebook</a>
-<!--                <a th:href="@{https://graph.facebook.com/v14.0/oauth/}">Login with Facebook</a>-->
-            </p>
             <p>
                 <input type="email" name="email" class="form-control" placeholder="E-mail" required autofocus/>
             </p>

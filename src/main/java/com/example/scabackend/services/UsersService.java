@@ -3,15 +3,21 @@ package com.example.scabackend.services;
 import com.example.scabackend.models.AuthenticationProvider;
 import com.example.scabackend.models.Users;
 import com.example.scabackend.repositories.UsersRepository;
+import com.example.scabackend.security.CustomOAuth2User;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -26,17 +32,22 @@ public class UsersService {
 //        return ResponseEntity.ok(usersRepository.save(user));
 //    }
 
-    public void processOAuthPostLogin(String username) {
-        Users existUser = usersRepository.getUserByUsername(username);
+    public void processOAuthPostLogin(String username, String authName, CustomOAuth2User oAuth2User) {
+        Optional<Users> existUser = usersRepository.findByEmailAddress(username);
+        System.out.println(authName);
+        System.out.println(oAuth2User.getAttributes());
+        String[] fullName = authName.split(" ");
+        log.info("user:" + existUser);
 
-        if (existUser == null) {
+        if (existUser.isEmpty()) {
             Users newUser = new Users();
-            newUser.setUsername(username);
-            newUser.setAuthProvider(AuthenticationProvider.FACEBOOK);
-//            newUser.setEnabled(true);
+            newUser.setEmailAddress(username);
+            newUser.setFirstName(fullName[0]);
+            newUser.setLastName(fullName[1]);
+
+            newUser.setAuthProvider(AuthenticationProvider.THIRD_PARTY);
             usersRepository.save(newUser);
         }
-
     }
 
     public ResponseEntity<List<Users>> createUsers(List<Users> users){
