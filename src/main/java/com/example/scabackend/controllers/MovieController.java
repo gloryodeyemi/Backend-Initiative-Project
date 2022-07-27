@@ -19,8 +19,8 @@ public class MovieController {
     MoviesService moviesService;
 
     @PostMapping
-    public ResponseEntity<List<Movies>> createMovies(@Valid @RequestBody List<Movies> movies) {
-        return moviesService.save(movies);
+    public ResponseEntity<Movies> createMovies(@Valid @RequestBody Movies movie) {
+        return ResponseEntity.ok(moviesService.save(movie));
     }
 
     @GetMapping("/all")
@@ -34,8 +34,8 @@ public class MovieController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteMovie(@PathVariable Long id) {
-        return ResponseEntity.ok(moviesService.deleteById(id));
+    public void deleteMovie(@PathVariable Long id) {
+        moviesService.deleteById(id);
     }
 
     @PatchMapping("/update/{id}")

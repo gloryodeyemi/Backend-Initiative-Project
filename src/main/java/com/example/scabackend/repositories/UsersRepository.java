@@ -13,6 +13,8 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
     Optional<Users> findByEmailAddress(String email);
 
+    Boolean existsByEmailAddress(String email);
+
 //    @Query("SELECT u FROM Users u WHERE u.username = :username")
 //    public Optional<Users> getUserByUsername(@Param("username") String username);
 }

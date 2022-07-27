@@ -18,8 +18,8 @@ public class RentalController {
     RentalsService rentalsService;
 
     @PostMapping
-    public ResponseEntity<List<Rentals>> createRentals(@Valid @RequestBody List<Rentals> rentals) {
-        return rentalsService.save(rentals);
+    public ResponseEntity<Rentals> createRentals(@Valid @RequestBody Rentals rental) {
+        return ResponseEntity.ok(rentalsService.save(rental));
     }
 
     @GetMapping("/all")
@@ -33,8 +33,8 @@ public class RentalController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteRental(@PathVariable Long id) {
-        return ResponseEntity.ok(rentalsService.deleteById(id));
+    public void deleteRental(@PathVariable Long id) {
+        rentalsService.deleteById(id);
     }
 
     @PatchMapping("/update/{id}")

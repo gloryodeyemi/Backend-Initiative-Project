@@ -1,6 +1,9 @@
 package com.example.scabackend.services;
 
+import com.example.scabackend.dto.PasswordDto;
+import com.example.scabackend.exceptions.AccountException;
 import com.example.scabackend.models.AuthenticationProvider;
+import com.example.scabackend.models.UserRoles;
 import com.example.scabackend.models.Users;
 import com.example.scabackend.repositories.UsersRepository;
 import com.example.scabackend.security.CustomOAuth2User;
@@ -8,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +26,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class UsersService {
+public class UsersService implements CrudService<Users, Long>{
     @Autowired
     UsersRepository usersRepository;
 
@@ -44,26 +49,62 @@ public class UsersService {
             newUser.setEmailAddress(username);
             newUser.setFirstName(fullName[0]);
             newUser.setLastName(fullName[1]);
-
+//            newUser.setRoles();
             newUser.setAuthProvider(AuthenticationProvider.THIRD_PARTY);
             usersRepository.save(newUser);
         }
     }
 
-    public ResponseEntity<List<Users>> createUsers(List<Users> users){
-        List<Users> userList = new ArrayList<>();
-        for (Users user: users){
-//            log.info("user::{}", user);
-            String password = passwordEncoder.encode(user.getPassword());
-            if (user.getPassword().equals(user.getConfirmPassword())) {
-                user.setPassword(password);
-                userList.add(usersRepository.save(user));
-            } else {
-//                throw new AccountException("Password error-Password does not match!");
-            }
+//    public ResponseEntity<List<Users>> createUsers(List<Users> users){
+//        List<Users> userList = new ArrayList<>();
+//        for (Users user: users){
+////            log.info("user::{}", user);
+//            String password = passwordEncoder.encode(user.getPassword());
+//            if (user.getPassword().equals(user.getConfirmPassword())) {
+//                user.setPassword(password);
+//                userList.add(usersRepository.save(user));
+//            } else {
+////                throw new AccountException("Password error-Password does not match!");
+//            }
+//        }
+////        log.info("user list::{}", userList);
+//        return ResponseEntity.ok(userList);
+//    }
+
+    public Users save(Users users) throws AccountException {
+        if (usersRepository.existsByEmailAddress(users.getEmailAddress())){
+            throw new AccountException("Error-An account with " + users.getEmailAddress() + " already exists.");
         }
-//        log.info("user list::{}", userList);
-        return ResponseEntity.ok(userList);
+        String password = passwordEncoder.encode(users.getPassword());
+        if (users.getPassword().equals(users.getConfirmPassword())) {
+            users.setPassword(password);
+            users.setAuthProvider(AuthenticationProvider.LOCAL);
+            return usersRepository.save(users);
+        } else {
+            throw new AccountException("Password error-Password does not match!");
+        }
+    }
+
+    public void changePassword(PasswordDto passwordDto, Long userId){
+        Users users = findById(userId);
+        String password = passwordEncoder.encode(passwordDto.getNewPassword());
+        if (!(passwordEncoder.matches(passwordDto.getOldPassword(), users.getPassword()))){
+            throw new AccountException("Error-Your old password is not correct!");
+        }
+        if (!(passwordDto.getNewPassword().equals(passwordDto.getConfirmNewPassword()))){
+            throw new AccountException("Password error-Password does not match!");
+        }
+        if (passwordEncoder.matches(passwordDto.getNewPassword(), users.getPassword())){
+            throw new AccountException("Password error-You cannot use your previous password!");
+        }
+        users.setPassword(password);
+        users.setId(userId);
+        usersRepository.save(users);
+    }
+
+    @Override
+    public void delete(Users object) {
+
     }
 
     public List<Users> findAll() {
@@ -83,8 +124,12 @@ public class UsersService {
         return ResponseEntity.ok(usersRepository.save(userToUpdate));
     }
 
-    public String deleteById(Long userId) {
+    public void deleteById(Long userId) {
         usersRepository.deleteById(userId);
-        return "User deleted!";
+    }
+
+    @Override
+    public Page<Users> findAllByPage(Pageable pageable) {
+        return null;
     }
 }

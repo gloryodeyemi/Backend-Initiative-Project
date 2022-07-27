@@ -1,5 +1,6 @@
 package com.example.scabackend.controllers;
 
+import com.example.scabackend.dto.PasswordDto;
 import com.example.scabackend.models.Users;
 import com.example.scabackend.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,14 @@ public class UsersController {
         return "redirect:/login";
     }
 
+//    @PostMapping("/create")
+//    public ResponseEntity<List<Users>> createUsers(@Valid @RequestBody List<Users> users) {
+//        return usersServices.createUsers(users);
+//    }
+
     @PostMapping("/create")
-    public ResponseEntity<List<Users>> createUsers(@Valid @RequestBody List<Users> users) {
-        return usersServices.createUsers(users);
+    public ResponseEntity<Users> createUser(@Valid @RequestBody Users users) {
+        return ResponseEntity.ok(usersServices.save(users));
     }
 
     @GetMapping("/all")
@@ -54,12 +60,17 @@ public class UsersController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        return ResponseEntity.ok(usersServices.deleteById(id));
+    public void deleteUser(@PathVariable Long id) {
+        usersServices.deleteById(id);
     }
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<Users> updateUser(@PathVariable Long id, @Valid @RequestBody Users user) {
         return usersServices.updateUser(id, user);
+    }
+
+    @PatchMapping("/change-password/{id}")
+    public void changePassword(@PathVariable Long id, @Valid @RequestBody PasswordDto passwordDto) {
+        usersServices.changePassword(passwordDto, id);
     }
 }

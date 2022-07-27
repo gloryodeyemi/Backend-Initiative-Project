@@ -4,6 +4,8 @@ import com.example.scabackend.models.Movies;
 import com.example.scabackend.repositories.MoviesRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MoviesService {
+public class MoviesService implements CrudService<Movies, Long>{
     @Autowired
     MoviesRepository moviesRepository;
 
-    public ResponseEntity<List<Movies>> save(List<Movies> movies){
-        return ResponseEntity.ok(moviesRepository.saveAll(movies));
+    public Movies save(Movies movie){
+        return moviesRepository.save(movie);
+    }
+
+    @Override
+    public void delete(Movies object) {
+
     }
 
     public List<Movies> findAll() {
@@ -34,8 +41,12 @@ public class MoviesService {
         return ResponseEntity.ok(moviesRepository.save(movieToUpdate));
     }
 
-    public String deleteById(Long id) {
+    public void deleteById(Long id) {
         moviesRepository.deleteById(id);
-        return "Movie deleted!";
+    }
+
+    @Override
+    public Page<Movies> findAllByPage(Pageable pageable) {
+        return null;
     }
 }

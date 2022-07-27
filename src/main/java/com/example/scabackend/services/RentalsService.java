@@ -5,18 +5,25 @@ import com.example.scabackend.models.Rentals;
 import com.example.scabackend.repositories.RentalsRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class RentalsService {
+public class RentalsService implements CrudService<Rentals, Long>{
     @Autowired
     RentalsRepository rentalsRepository;
 
-    public ResponseEntity<List<Rentals>> save(List<Rentals> rentals){
-        return ResponseEntity.ok(rentalsRepository.saveAll(rentals));
+    public Rentals save(Rentals rental){
+        return rentalsRepository.save(rental);
+    }
+
+    @Override
+    public void delete(Rentals object) {
+
     }
 
     public List<Rentals> findAll() {
@@ -34,8 +41,12 @@ public class RentalsService {
         return ResponseEntity.ok(rentalsRepository.save(rentToUpdate));
     }
 
-    public String deleteById(Long id) {
+    public void deleteById(Long id) {
         rentalsRepository.deleteById(id);
-        return "Rent deleted!";
+    }
+
+    @Override
+    public Page<Rentals> findAllByPage(Pageable pageable) {
+        return null;
     }
 }
