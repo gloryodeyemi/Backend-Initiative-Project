@@ -27,9 +27,9 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private AuthenticationProvider authProvider;
 
-    @OneToMany
-    @JsonIgnoreProperties({"id", "createdAt", "updatedAt"})
-    private Set<UserRoles> roles;
+//    @OneToMany
+//    @JsonIgnoreProperties({"id", "createdAt", "updatedAt"})
+//    private Set<UserRoles> roles;
 
     @NotBlank(message = "Validation error-First name cannot be blank")
     private String firstName;
@@ -53,6 +53,9 @@ public class Users {
 //    @Size(min = 6, max = 20, message
 //            = "Validation error-Username must be between 6 and 20 characters")
     private String username;
+
+    @OneToOne
+    private Pictures profilePicture;
 
     private String password;
 

@@ -36,37 +36,37 @@ public class UserRolesService implements CrudService<UserRoles, Long> {
     }
 
     public void assignRole(AssignRoleDto assignRoleDto) throws Exception{
-        Optional<Users> user = usersRepository.findByEmailAddress(assignRoleDto.getUserEmail());
-        UserRoles role = findById(assignRoleDto.getRoleId());
-//        ArrayList<UserRoles> rolesToAssign = new ArrayList<>();
-        if (user.isPresent()){
-            Set<UserRoles> rolesSet = user.get().getRoles();
-            if (rolesSet.contains(role)){
-                throw new Exception("Cannot assign role-Role exists!");
-            }
-            rolesSet.add(role);
-            user.get().setRoles(rolesSet);
-            user.get().setId(user.get().getId());
-            usersRepository.save(user.get());
-        } else {
-            throw new Exception("Error-User not found!");
-        }
+//        Optional<Users> user = usersRepository.findByEmailAddress(assignRoleDto.getUserEmail());
+//        UserRoles role = findById(assignRoleDto.getRoleId());
+////        ArrayList<UserRoles> rolesToAssign = new ArrayList<>();
+//        if (user.isPresent()){
+//            Set<UserRoles> rolesSet = user.get().getRoles();
+//            if (rolesSet.contains(role)){
+//                throw new Exception("Cannot assign role-Role exists!");
+//            }
+//            rolesSet.add(role);
+//            user.get().setRoles(rolesSet);
+//            user.get().setId(user.get().getId());
+//            usersRepository.save(user.get());
+//        } else {
+//            throw new Exception("Error-User not found!");
+//        }
     }
 
     public void removeRole(AssignRoleDto assignRoleDto) throws Exception{
-        Optional<Users> user = usersRepository.findByEmailAddress(assignRoleDto.getUserEmail());
-        UserRoles role = findById(assignRoleDto.getRoleId());
-        if (user.isPresent()){
-            Set<UserRoles> userRoles = user.get().getRoles();
-            if (userRoles.contains(role)){
-                userRoles.remove(role);
-                user.get().setRoles(userRoles);
-                user.get().setId(user.get().getId());
-                usersRepository.save(user.get());
-            }
-        } else {
-            throw new Exception("Error-User not found!");
-        }
+//        Optional<Users> user = usersRepository.findByEmailAddress(assignRoleDto.getUserEmail());
+//        UserRoles role = findById(assignRoleDto.getRoleId());
+//        if (user.isPresent()){
+//            Set<UserRoles> userRoles = user.get().getRoles();
+//            if (userRoles.contains(role)){
+//                userRoles.remove(role);
+//                user.get().setRoles(userRoles);
+//                user.get().setId(user.get().getId());
+//                usersRepository.save(user.get());
+//            }
+//        } else {
+//            throw new Exception("Error-User not found!");
+//        }
     }
 
     @Override

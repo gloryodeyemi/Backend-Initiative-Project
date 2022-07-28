@@ -13,14 +13,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.servlet.ServletException;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 
 @ControllerAdvice
 @Slf4j
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({AccountException.class, ConstraintViolationException.class, DataIntegrityViolationException.class, OAuth2AuthenticationException.class,
-            UsernameNotFoundException.class, Exception.class})
+            UsernameNotFoundException.class, Exception.class, IOException.class, ServletException.class})
     public ResponseEntity<Object> handleUserNotAllowedException(final Exception ex, final WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage();
 //        log.info("ex::{}", ex);

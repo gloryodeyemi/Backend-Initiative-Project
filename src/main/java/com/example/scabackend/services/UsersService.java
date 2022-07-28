@@ -1,10 +1,14 @@
 package com.example.scabackend.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.scabackend.dto.PasswordDto;
 import com.example.scabackend.exceptions.AccountException;
 import com.example.scabackend.models.AuthenticationProvider;
+import com.example.scabackend.models.Pictures;
 import com.example.scabackend.models.UserRoles;
 import com.example.scabackend.models.Users;
+import com.example.scabackend.repositories.PicturesRepository;
 import com.example.scabackend.repositories.UsersRepository;
 import com.example.scabackend.security.CustomOAuth2User;
 import lombok.extern.slf4j.Slf4j;
@@ -18,11 +22,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -32,6 +38,12 @@ public class UsersService implements CrudService<Users, Long>{
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    Cloudinary cloudinary;
+
+    @Autowired
+    PicturesRepository picturesRepository;
 
 //    public ResponseEntity<Users> createUser(Users user) {
 //        return ResponseEntity.ok(usersRepository.save(user));
@@ -131,5 +143,83 @@ public class UsersService implements CrudService<Users, Long>{
     @Override
     public Page<Users> findAllByPage(Pageable pageable) {
         return null;
+    }
+
+    public String uploadProfilePicture(MultipartFile profileImg) throws IOException{
+        try {
+            File uploadedFile = convertMultiPartToFile(profileImg);
+//            File uploadedFile = new File(profileImg.getContentType());
+            Map uploadResult = cloudinary.uploader().upload(uploadedFile, ObjectUtils.emptyMap());
+            boolean isDeleted = uploadedFile.delete();
+
+            if (isDeleted){
+                System.out.println("File successfully deleted");
+            }else
+                System.out.println("File doesn't exist");
+            return  uploadResult.get("url").toString();
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
+
+    public void saveUploadToDB(Users users, String url, String title){
+        Pictures newPicture = new Pictures();
+        newPicture.setImageUrl(url);
+        newPicture.setTitle(title);
+        newPicture.setUser(users);
+        users.setProfilePicture(newPicture);
+        users.setId(users.getId());
+        usersRepository.save(users);
+        picturesRepository.save(newPicture);
+    }
+
+    private File convertMultiPartToFile(MultipartFile file) throws IOException {
+        File convFile = new File(file.getOriginalFilename());
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convFile;
+    }
+
+    public LinkedHashMap<String, Object> modifyJsonResponse(String requestType, String imageUrl){
+        LinkedHashMap<String, Object> jsonResponse = new LinkedHashMap<>();
+        Pictures pictures = picturesRepository.findPicturesByImageUrl(imageUrl);
+        if(requestType.equals("create")){
+            jsonResponse.put("status", "success");
+            LinkedHashMap<String, String > data = new LinkedHashMap<>();
+            data.put("id", pictures.getId().toString());
+            data.put("message","Image successfully posted");
+            data.put("createdOn", pictures.getCreatedOn().toString());
+            data.put("title", pictures.getTitle());
+            data.put("imageUrl", imageUrl);
+
+            jsonResponse.put("data", data);
+        }
+
+        if(requestType.equals("delete")){
+            jsonResponse.put("status", "success");
+            LinkedHashMap<String, String > data = new LinkedHashMap<>();
+            data.put("message","Image post successfully deleted");
+            jsonResponse.put("data", data);
+        }
+
+        if(requestType.equals("get")){
+
+            jsonResponse.put("status", "success");
+            LinkedHashMap<String, Object > data = new LinkedHashMap<>();
+
+            data.put("id", pictures.getId().toString());
+            data.put("createdOn", pictures.getCreatedOn().toString());
+            data.put("title", pictures.getTitle());
+            data.put("url", pictures.getImageUrl());
+
+
+//            CommentService.addingCommentToResponseSpec(jsonResponse, data, pictures.getComments(), null);
+        }
+
+        //look at the else condition again if need be. for better error handling.
+
+
+        return jsonResponse;
     }
 }
