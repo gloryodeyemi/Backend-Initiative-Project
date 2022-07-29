@@ -5,8 +5,10 @@ import com.example.scabackend.dto.PasswordDto;
 import com.example.scabackend.exceptions.AccountException;
 import com.example.scabackend.models.AuthenticationProvider;
 import com.example.scabackend.models.Media;
+import com.example.scabackend.models.UserRoles;
 import com.example.scabackend.models.Users;
 import com.example.scabackend.repositories.MediaRepository;
+import com.example.scabackend.repositories.UserRolesRepository;
 import com.example.scabackend.repositories.UsersRepository;
 import com.example.scabackend.security.CustomOAuth2User;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +37,8 @@ public class UsersService implements CrudService<Users, Long>{
     @Autowired
     MediaRepository mediaRepository;
 
-//    public ResponseEntity<Users> createUser(Users user) {
-//        return ResponseEntity.ok(usersRepository.save(user));
-//    }
+    @Autowired
+    UserRolesRepository userRolesRepository;
 
     public void processOAuthPostLogin(String username, String authName, CustomOAuth2User oAuth2User) {
         Optional<Users> existUser = usersRepository.findByEmailAddress(username);
@@ -51,7 +52,7 @@ public class UsersService implements CrudService<Users, Long>{
             newUser.setEmailAddress(username);
             newUser.setFirstName(fullName[0]);
             newUser.setLastName(fullName[1]);
-//            newUser.setRoles();
+            newUser.setRoles(findRole());
             newUser.setAuthProvider(AuthenticationProvider.THIRD_PARTY);
             usersRepository.save(newUser);
         }
@@ -73,7 +74,7 @@ public class UsersService implements CrudService<Users, Long>{
 //        return ResponseEntity.ok(userList);
 //    }
 
-    public Users save(Users users) throws AccountException {
+    public Users save(Users users) throws RuntimeException {
         if (usersRepository.existsByEmailAddress(users.getEmailAddress())){
             throw new AccountException("Error-An account with " + users.getEmailAddress() + " already exists.");
         }
@@ -81,9 +82,10 @@ public class UsersService implements CrudService<Users, Long>{
         if (users.getPassword().equals(users.getConfirmPassword())) {
             users.setPassword(password);
             users.setAuthProvider(AuthenticationProvider.LOCAL);
+            users.setRoles(findRole());
             return usersRepository.save(users);
         } else {
-            throw new AccountException("Password error-Password does not match!");
+            throw new RuntimeException("Password error-Password does not match!");
         }
     }
 
@@ -102,6 +104,13 @@ public class UsersService implements CrudService<Users, Long>{
         users.setPassword(password);
         users.setId(userId);
         usersRepository.save(users);
+    }
+
+    public Set<UserRoles> findRole(){
+        UserRoles userRole = userRolesRepository.findByName("USER");
+        Set<UserRoles> rolesSet = new HashSet<>();
+        rolesSet.add(userRole);
+        return rolesSet;
     }
 
     @Override
@@ -135,22 +144,6 @@ public class UsersService implements CrudService<Users, Long>{
         return null;
     }
 
-//    public String uploadProfilePicture(MultipartFile profileImg) throws IOException{
-//        try {
-//            File uploadedFile = convertMultiPartToFile(profileImg);
-//            Map uploadResult = cloudinary.uploader().upload(uploadedFile, ObjectUtils.emptyMap());
-//            boolean isDeleted = uploadedFile.delete();
-//
-//            if (isDeleted){
-//                System.out.println("File successfully deleted");
-//            }else
-//                System.out.println("File doesn't exist");
-//            return  uploadResult.get("url").toString();
-//        } catch (Exception e) {
-//            throw new IOException(e);
-//        }
-//    }
-
     public void saveProfilePicture(Users users, String url, String title, String message){
         Media newPicture = new Media();
         newPicture.setImageUrl(url);
@@ -162,47 +155,4 @@ public class UsersService implements CrudService<Users, Long>{
         users.setId(users.getId());
         usersRepository.save(users);
     }
-//
-//    private File convertMultiPartToFile(MultipartFile file) throws IOException {
-//        File convFile = new File(file.getOriginalFilename());
-//        FileOutputStream fos = new FileOutputStream(convFile);
-//        fos.write(file.getBytes());
-//        fos.close();
-//        return convFile;
-//    }
-//
-//    public LinkedHashMap<String, Object> modifyJsonResponse(String requestType, String imageUrl){
-//        LinkedHashMap<String, Object> jsonResponse = new LinkedHashMap<>();
-//        Media pictures = mediaRepository.findMediaByImageUrl(imageUrl);
-//        if(requestType.equals("create")){
-//            jsonResponse.put("status", "success");
-//            LinkedHashMap<String, String > data = new LinkedHashMap<>();
-//            data.put("id", pictures.getId().toString());
-//            data.put("message","Image successfully posted");
-//            data.put("createdOn", pictures.getCreatedOn().toString());
-//            data.put("title", pictures.getTitle());
-//            data.put("imageUrl", imageUrl);
-//
-//            jsonResponse.put("data", data);
-//        }
-//
-//        if(requestType.equals("delete")){
-//            jsonResponse.put("status", "success");
-//            LinkedHashMap<String, String > data = new LinkedHashMap<>();
-//            data.put("message","Image post successfully deleted");
-//            jsonResponse.put("data", data);
-//        }
-//
-//        if(requestType.equals("get")){
-//
-//            jsonResponse.put("status", "success");
-//            LinkedHashMap<String, Object > data = new LinkedHashMap<>();
-//
-//            data.put("id", pictures.getId().toString());
-//            data.put("createdOn", pictures.getCreatedOn().toString());
-//            data.put("title", pictures.getTitle());
-//            data.put("url", pictures.getImageUrl());
-//        }
-//        return jsonResponse;
-//    }
 }

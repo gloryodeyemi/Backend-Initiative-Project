@@ -28,15 +28,6 @@ public class UsersController {
     @Autowired
     MediaService mediaService;
 
-    @Autowired
-    Cloudinary cloudinary;
-
-
-//    @PostMapping()
-//    public ResponseEntity<Users> createUser(@RequestBody Users user) {
-//        return usersServices.createUser(user);
-//    }
-
     @GetMapping("/login")
     public String login(Model model) {
         return "login";
@@ -57,8 +48,8 @@ public class UsersController {
 //        return usersServices.createUsers(users);
 //    }
 
-    @PostMapping("/create")
-    public ResponseEntity<Users> createUser(@Valid @RequestBody Users users) {
+    @PostMapping("/add")
+    public ResponseEntity<Users> createUser(@RequestBody @Valid Users users) throws RuntimeException {
         return ResponseEntity.ok(usersServices.save(users));
     }
 
@@ -94,7 +85,6 @@ public class UsersController {
         Users currentUser = usersServices.findById(userId);
         String url = mediaService.uploadMedia(file);
         usersServices.saveProfilePicture(currentUser, url, title, message);
-
 
          LinkedHashMap<String, Object> jsonResponse = mediaService.modifyJsonResponse("create", url);
         return new ResponseEntity<>(jsonResponse, HttpStatus.CREATED);

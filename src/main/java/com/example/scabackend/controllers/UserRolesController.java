@@ -40,13 +40,13 @@ public class UserRolesController {
 //    public ResponseEntity<UserRoles> updateUserRole(@PathVariable Long id, @RequestBody UserRoles userRole) {
 //        return userRolesService.update(id, userRole);
 //    }
-    @PatchMapping("/assign")
-    public void assignRole(@RequestBody AssignRoleDto assignRoleDto) throws Exception{
-        userRolesService.assignRole(assignRoleDto);
+    @PatchMapping("/assign/{userId}")
+    public void assignRole(@PathVariable Long userId, @RequestBody AssignRoleDto assignRoleDto) throws Exception{
+        userRolesService.assignRole(assignRoleDto, userId);
     }
 
-    @PatchMapping("/remove")
-    public void removeRole(@RequestBody AssignRoleDto assignRoleDto) throws Exception{
-        userRolesService.removeRole(assignRoleDto);
+    @PatchMapping("/remove/{userId}")
+    public void removeRole(@PathVariable Long userId, @RequestBody AssignRoleDto assignRoleDto) throws Exception{
+        userRolesService.removeRole(assignRoleDto, userId);
     }
 }

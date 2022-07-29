@@ -2,13 +2,18 @@ package com.example.scabackend.controllers;
 
 import com.example.scabackend.models.Movies;
 import com.example.scabackend.models.Users;
+import com.example.scabackend.services.MediaService;
 import com.example.scabackend.services.MoviesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Validated
@@ -17,6 +22,9 @@ import java.util.List;
 public class MovieController {
     @Autowired
     MoviesService moviesService;
+
+    @Autowired
+    MediaService mediaService;
 
     @PostMapping
     public ResponseEntity<Movies> createMovies(@Valid @RequestBody Movies movie) {
@@ -41,5 +49,16 @@ public class MovieController {
     @PatchMapping("/update/{id}")
     public ResponseEntity<Movies> updateMovie(@PathVariable Long id, @RequestBody Movies movie) {
         return moviesService.update(id, movie);
+    }
+
+    @PostMapping("/upload/{movieId}")
+    public ResponseEntity<LinkedHashMap<String, Object>> uploadMoviePoster(@PathVariable("movieId") Long movieId, @RequestParam("file") MultipartFile file,
+                                                                              @RequestParam("title") String title, @RequestParam("message") String message) throws IOException {
+        Movies currentMovie = moviesService.findById(movieId);
+        String url = mediaService.uploadMedia(file);
+        moviesService.addPoster(currentMovie, url, title, message);
+
+        LinkedHashMap<String, Object> jsonResponse = mediaService.modifyJsonResponse("create", url);
+        return new ResponseEntity<>(jsonResponse, HttpStatus.CREATED);
     }
 }

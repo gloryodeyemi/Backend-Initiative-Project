@@ -1,6 +1,7 @@
 package com.example.scabackend.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -30,6 +31,7 @@ public class Movies {
     private String description;
 
     @OneToMany
+    @NotBlank(message = "Movie description cannot be blank")
     private List<Genre> genre;
 
     @NotNull(message = "Maturity rating id is mandatory")
@@ -62,6 +64,7 @@ public class Movies {
     private LocalDate releaseDate;
 
     @OneToOne
+    @JsonIgnoreProperties({"id", "user", "movies", "createdOn", "updatedAt"})
     private Media moviePoster;
 
     @OneToMany

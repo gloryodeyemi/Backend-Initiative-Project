@@ -1,6 +1,9 @@
 package com.example.scabackend.services;
 
+import com.example.scabackend.models.Media;
 import com.example.scabackend.models.Movies;
+import com.example.scabackend.models.Users;
+import com.example.scabackend.repositories.MediaRepository;
 import com.example.scabackend.repositories.MoviesRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,9 @@ import java.util.List;
 public class MoviesService implements CrudService<Movies, Long>{
     @Autowired
     MoviesRepository moviesRepository;
+
+    @Autowired
+    MediaRepository mediaRepository;
 
     public Movies save(Movies movie){
         return moviesRepository.save(movie);
@@ -48,5 +54,17 @@ public class MoviesService implements CrudService<Movies, Long>{
     @Override
     public Page<Movies> findAllByPage(Pageable pageable) {
         return null;
+    }
+
+    public void addPoster(Movies movie, String url, String title, String message){
+        Media newPoster = new Media();
+        newPoster.setImageUrl(url);
+        newPoster.setTitle(title);
+        newPoster.setMovies(movie);
+        newPoster.setMessage(message);
+        Media savedPoster = mediaRepository.save(newPoster);
+        movie.setMoviePoster(savedPoster);
+        movie.setId(movie.getId());
+        moviesRepository.save(movie);
     }
 }

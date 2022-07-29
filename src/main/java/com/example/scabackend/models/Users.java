@@ -1,6 +1,7 @@
 package com.example.scabackend.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Data
@@ -21,9 +23,10 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private AuthenticationProvider authProvider;
 
-//    @OneToMany
-//    @JsonIgnoreProperties({"id", "createdAt", "updatedAt"})
-//    private Set<UserRoles> roles;
+    @NotNull
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"id", "createdAt", "updatedAt"})
+    private Set<UserRoles> roles;
 
     @NotBlank(message = "Validation error-First name cannot be blank")
     private String firstName;
@@ -49,6 +52,7 @@ public class Users {
     private String username;
 
     @OneToOne
+    @JsonIgnoreProperties({"id", "user", "movies", "createdOn", "updatedAt"})
     private Media profilePicture;
 
     private String password;

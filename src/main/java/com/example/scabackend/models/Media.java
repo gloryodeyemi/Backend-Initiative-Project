@@ -20,6 +20,8 @@ public class Media {
     private String message;
     @OneToOne
     private Users user;
+    @OneToOne
+    private Movies movies;
 
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

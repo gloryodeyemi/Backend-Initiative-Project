@@ -32,41 +32,53 @@ public class UserRolesService implements CrudService<UserRoles, Long> {
 
     @Override
     public UserRoles save(UserRoles object) {
+        object.setName(object.getName().toUpperCase(Locale.ROOT));
         return userRolesRepository.save(object);
     }
 
-    public void assignRole(AssignRoleDto assignRoleDto) throws Exception{
-//        Optional<Users> user = usersRepository.findByEmailAddress(assignRoleDto.getUserEmail());
-//        UserRoles role = findById(assignRoleDto.getRoleId());
-////        ArrayList<UserRoles> rolesToAssign = new ArrayList<>();
-//        if (user.isPresent()){
-//            Set<UserRoles> rolesSet = user.get().getRoles();
-//            if (rolesSet.contains(role)){
-//                throw new Exception("Cannot assign role-Role exists!");
-//            }
-//            rolesSet.add(role);
-//            user.get().setRoles(rolesSet);
-//            user.get().setId(user.get().getId());
-//            usersRepository.save(user.get());
-//        } else {
-//            throw new Exception("Error-User not found!");
-//        }
+    public void assignRole(AssignRoleDto assignRoleDto, Long userId) throws Exception{
+        if (!isAdmin(userId)){
+            throw new RuntimeException("Unauthorized-Cannot perform operation!");
+        }
+        Optional<Users> user = usersRepository.findByEmailAddress(assignRoleDto.getUserEmail());
+        UserRoles role = findById(assignRoleDto.getRoleId());
+//        ArrayList<UserRoles> rolesToAssign = new ArrayList<>();
+        if (user.isPresent()){
+            Set<UserRoles> rolesSet = user.get().getRoles();
+            if (rolesSet.contains(role)){
+                throw new Exception("Cannot assign role-Role exists!");
+            }
+            rolesSet.add(role);
+            user.get().setRoles(rolesSet);
+            user.get().setId(user.get().getId());
+            usersRepository.save(user.get());
+        } else {
+            throw new Exception("Error-User not found!");
+        }
     }
 
-    public void removeRole(AssignRoleDto assignRoleDto) throws Exception{
-//        Optional<Users> user = usersRepository.findByEmailAddress(assignRoleDto.getUserEmail());
-//        UserRoles role = findById(assignRoleDto.getRoleId());
-//        if (user.isPresent()){
-//            Set<UserRoles> userRoles = user.get().getRoles();
-//            if (userRoles.contains(role)){
-//                userRoles.remove(role);
-//                user.get().setRoles(userRoles);
-//                user.get().setId(user.get().getId());
-//                usersRepository.save(user.get());
-//            }
-//        } else {
-//            throw new Exception("Error-User not found!");
-//        }
+    public void removeRole(AssignRoleDto assignRoleDto, Long userId) throws Exception{
+        if (!isAdmin(userId)){
+            throw new RuntimeException("Unauthorized-Cannot perform operation!");
+        }
+        Optional<Users> user = usersRepository.findByEmailAddress(assignRoleDto.getUserEmail());
+        UserRoles role = findById(assignRoleDto.getRoleId());
+        if (user.isPresent()){
+            Set<UserRoles> userRoles = user.get().getRoles();
+            if (userRoles.contains(role)){
+                userRoles.remove(role);
+                user.get().setRoles(userRoles);
+                user.get().setId(user.get().getId());
+                usersRepository.save(user.get());
+            }
+        } else {
+            throw new Exception("Error-User not found!");
+        }
+    }
+
+    public boolean isAdmin(Long userId){
+        Optional<Users> user = usersRepository.findById(userId);
+        return user.get().getRoles().contains(userRolesRepository.findByName("ADMIN"));
     }
 
     @Override
