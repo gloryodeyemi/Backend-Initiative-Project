@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class Pictures {
+public class Media {
     @Id
     @GeneratedValue
     private Long id;

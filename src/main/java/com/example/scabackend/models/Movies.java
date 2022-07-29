@@ -61,6 +61,9 @@ public class Movies {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
 
+    @OneToOne
+    private Media moviePoster;
+
     @OneToMany
     private List<Reviews> reviews;
 

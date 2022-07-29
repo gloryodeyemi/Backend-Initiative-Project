@@ -1,33 +1,23 @@
 package com.example.scabackend.services;
 
 import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.example.scabackend.dto.PasswordDto;
 import com.example.scabackend.exceptions.AccountException;
 import com.example.scabackend.models.AuthenticationProvider;
-import com.example.scabackend.models.Pictures;
-import com.example.scabackend.models.UserRoles;
+import com.example.scabackend.models.Media;
 import com.example.scabackend.models.Users;
-import com.example.scabackend.repositories.PicturesRepository;
+import com.example.scabackend.repositories.MediaRepository;
 import com.example.scabackend.repositories.UsersRepository;
 import com.example.scabackend.security.CustomOAuth2User;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -43,7 +33,7 @@ public class UsersService implements CrudService<Users, Long>{
     Cloudinary cloudinary;
 
     @Autowired
-    PicturesRepository picturesRepository;
+    MediaRepository mediaRepository;
 
 //    public ResponseEntity<Users> createUser(Users user) {
 //        return ResponseEntity.ok(usersRepository.save(user));
@@ -145,81 +135,74 @@ public class UsersService implements CrudService<Users, Long>{
         return null;
     }
 
-    public String uploadProfilePicture(MultipartFile profileImg) throws IOException{
-        try {
-            File uploadedFile = convertMultiPartToFile(profileImg);
-//            File uploadedFile = new File(profileImg.getContentType());
-            Map uploadResult = cloudinary.uploader().upload(uploadedFile, ObjectUtils.emptyMap());
-            boolean isDeleted = uploadedFile.delete();
+//    public String uploadProfilePicture(MultipartFile profileImg) throws IOException{
+//        try {
+//            File uploadedFile = convertMultiPartToFile(profileImg);
+//            Map uploadResult = cloudinary.uploader().upload(uploadedFile, ObjectUtils.emptyMap());
+//            boolean isDeleted = uploadedFile.delete();
+//
+//            if (isDeleted){
+//                System.out.println("File successfully deleted");
+//            }else
+//                System.out.println("File doesn't exist");
+//            return  uploadResult.get("url").toString();
+//        } catch (Exception e) {
+//            throw new IOException(e);
+//        }
+//    }
 
-            if (isDeleted){
-                System.out.println("File successfully deleted");
-            }else
-                System.out.println("File doesn't exist");
-            return  uploadResult.get("url").toString();
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
-    }
-
-    public void saveUploadToDB(Users users, String url, String title){
-        Pictures newPicture = new Pictures();
+    public void saveProfilePicture(Users users, String url, String title, String message){
+        Media newPicture = new Media();
         newPicture.setImageUrl(url);
         newPicture.setTitle(title);
         newPicture.setUser(users);
-        users.setProfilePicture(newPicture);
+        newPicture.setMessage(message);
+        Media savedPicture = mediaRepository.save(newPicture);
+        users.setProfilePicture(savedPicture);
         users.setId(users.getId());
         usersRepository.save(users);
-        picturesRepository.save(newPicture);
     }
-
-    private File convertMultiPartToFile(MultipartFile file) throws IOException {
-        File convFile = new File(file.getOriginalFilename());
-        FileOutputStream fos = new FileOutputStream(convFile);
-        fos.write(file.getBytes());
-        fos.close();
-        return convFile;
-    }
-
-    public LinkedHashMap<String, Object> modifyJsonResponse(String requestType, String imageUrl){
-        LinkedHashMap<String, Object> jsonResponse = new LinkedHashMap<>();
-        Pictures pictures = picturesRepository.findPicturesByImageUrl(imageUrl);
-        if(requestType.equals("create")){
-            jsonResponse.put("status", "success");
-            LinkedHashMap<String, String > data = new LinkedHashMap<>();
-            data.put("id", pictures.getId().toString());
-            data.put("message","Image successfully posted");
-            data.put("createdOn", pictures.getCreatedOn().toString());
-            data.put("title", pictures.getTitle());
-            data.put("imageUrl", imageUrl);
-
-            jsonResponse.put("data", data);
-        }
-
-        if(requestType.equals("delete")){
-            jsonResponse.put("status", "success");
-            LinkedHashMap<String, String > data = new LinkedHashMap<>();
-            data.put("message","Image post successfully deleted");
-            jsonResponse.put("data", data);
-        }
-
-        if(requestType.equals("get")){
-
-            jsonResponse.put("status", "success");
-            LinkedHashMap<String, Object > data = new LinkedHashMap<>();
-
-            data.put("id", pictures.getId().toString());
-            data.put("createdOn", pictures.getCreatedOn().toString());
-            data.put("title", pictures.getTitle());
-            data.put("url", pictures.getImageUrl());
-
-
-//            CommentService.addingCommentToResponseSpec(jsonResponse, data, pictures.getComments(), null);
-        }
-
-        //look at the else condition again if need be. for better error handling.
-
-
-        return jsonResponse;
-    }
+//
+//    private File convertMultiPartToFile(MultipartFile file) throws IOException {
+//        File convFile = new File(file.getOriginalFilename());
+//        FileOutputStream fos = new FileOutputStream(convFile);
+//        fos.write(file.getBytes());
+//        fos.close();
+//        return convFile;
+//    }
+//
+//    public LinkedHashMap<String, Object> modifyJsonResponse(String requestType, String imageUrl){
+//        LinkedHashMap<String, Object> jsonResponse = new LinkedHashMap<>();
+//        Media pictures = mediaRepository.findMediaByImageUrl(imageUrl);
+//        if(requestType.equals("create")){
+//            jsonResponse.put("status", "success");
+//            LinkedHashMap<String, String > data = new LinkedHashMap<>();
+//            data.put("id", pictures.getId().toString());
+//            data.put("message","Image successfully posted");
+//            data.put("createdOn", pictures.getCreatedOn().toString());
+//            data.put("title", pictures.getTitle());
+//            data.put("imageUrl", imageUrl);
+//
+//            jsonResponse.put("data", data);
+//        }
+//
+//        if(requestType.equals("delete")){
+//            jsonResponse.put("status", "success");
+//            LinkedHashMap<String, String > data = new LinkedHashMap<>();
+//            data.put("message","Image post successfully deleted");
+//            jsonResponse.put("data", data);
+//        }
+//
+//        if(requestType.equals("get")){
+//
+//            jsonResponse.put("status", "success");
+//            LinkedHashMap<String, Object > data = new LinkedHashMap<>();
+//
+//            data.put("id", pictures.getId().toString());
+//            data.put("createdOn", pictures.getCreatedOn().toString());
+//            data.put("title", pictures.getTitle());
+//            data.put("url", pictures.getImageUrl());
+//        }
+//        return jsonResponse;
+//    }
 }
