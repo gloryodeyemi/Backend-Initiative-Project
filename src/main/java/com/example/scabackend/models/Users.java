@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Data
 public class Users {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)

@@ -20,7 +20,7 @@ import java.util.Set;
 @Data
 public class Movies {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Movie title cannot be blank")
