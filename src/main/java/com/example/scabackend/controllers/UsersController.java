@@ -2,6 +2,7 @@ package com.example.scabackend.controllers;
 
 import com.cloudinary.Cloudinary;
 import com.example.scabackend.dto.PasswordDto;
+import com.example.scabackend.dto.UserDto;
 import com.example.scabackend.models.Users;
 import com.example.scabackend.services.MediaService;
 import com.example.scabackend.services.UsersService;
@@ -49,8 +50,8 @@ public class UsersController {
 //    }
 
     @PostMapping("/add")
-    public ResponseEntity<Users> createUser(@RequestBody @Valid Users users) throws RuntimeException {
-        return ResponseEntity.ok(usersServices.save(users));
+    public ResponseEntity<Users> createUser(@RequestBody UserDto userDto) throws RuntimeException {
+        return ResponseEntity.ok(usersServices.save(userDto));
     }
 
     @GetMapping("/all")
@@ -69,12 +70,12 @@ public class UsersController {
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<Users> updateUser(@PathVariable Long id, @Valid @RequestBody Users user) {
+    public ResponseEntity<Users> updateUser(@PathVariable Long id, @RequestBody Users user) {
         return usersServices.updateUser(id, user);
     }
 
     @PatchMapping("/change-password/{id}")
-    public void changePassword(@PathVariable Long id, @Valid @RequestBody PasswordDto passwordDto) {
+    public void changePassword(@PathVariable Long id, @RequestBody PasswordDto passwordDto) {
         usersServices.changePassword(passwordDto, id);
     }
 

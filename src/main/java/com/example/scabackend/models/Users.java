@@ -1,6 +1,7 @@
 package com.example.scabackend.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,6 +22,7 @@ public class Users {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(updatable = false)
     private AuthenticationProvider authProvider;
 
     @NotNull
@@ -55,9 +57,11 @@ public class Users {
     @JsonIgnoreProperties({"id", "user", "movies", "createdOn", "updatedAt"})
     private Media profilePicture;
 
+    @JsonIgnore
     private String password;
 
     @Transient
+    @JsonIgnore
     private String confirmPassword;
 
     @CreationTimestamp

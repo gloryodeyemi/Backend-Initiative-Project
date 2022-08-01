@@ -2,6 +2,7 @@ package com.example.scabackend.services;
 
 import com.cloudinary.Cloudinary;
 import com.example.scabackend.dto.PasswordDto;
+import com.example.scabackend.dto.UserDto;
 import com.example.scabackend.exceptions.AccountException;
 import com.example.scabackend.models.AuthenticationProvider;
 import com.example.scabackend.models.Media;
@@ -74,16 +75,18 @@ public class UsersService implements CrudService<Users, Long>{
 //        return ResponseEntity.ok(userList);
 //    }
 
-    public Users save(Users users) throws RuntimeException {
-        if (usersRepository.existsByEmailAddress(users.getEmailAddress())){
-            throw new AccountException("Error-An account with " + users.getEmailAddress() + " already exists.");
+    public Users save(UserDto userDto) throws RuntimeException {
+        if (usersRepository.existsByEmailAddress(userDto.getEmailAddress())){
+            throw new AccountException("Error-An account with " + userDto.getEmailAddress() + " already exists.");
         }
-        String password = passwordEncoder.encode(users.getPassword());
-        if (users.getPassword().equals(users.getConfirmPassword())) {
-            users.setPassword(password);
-            users.setAuthProvider(AuthenticationProvider.LOCAL);
-            users.setRoles(findRole());
-            return usersRepository.save(users);
+        Users newUser = new Users();
+        BeanUtils.copyProperties(userDto, newUser);
+        String password = passwordEncoder.encode(userDto.getPassword());
+        if (userDto.getPassword().equals(userDto.getConfirmPassword())) {
+            newUser.setPassword(password);
+            newUser.setAuthProvider(AuthenticationProvider.LOCAL);
+            newUser.setRoles(findRole());
+            return usersRepository.save(newUser);
         } else {
             throw new RuntimeException("Password error-Password does not match!");
         }
@@ -126,10 +129,16 @@ public class UsersService implements CrudService<Users, Long>{
         return usersRepository.findById(userId).orElse(null);
     }
 
+    @Override
+    public Users save(Users object) {
+        return null;
+    }
+
     public ResponseEntity<Users> updateUser(Long id, Users user){
 //        log.info("user::{}", user);
         Users userToUpdate = findById(id);
         BeanUtils.copyProperties(user, userToUpdate);
+        userToUpdate.setRoles(findRole());
         userToUpdate.setId(id);
 //        log.info("user::{}", userToUpdate);
         return ResponseEntity.ok(usersRepository.save(userToUpdate));
