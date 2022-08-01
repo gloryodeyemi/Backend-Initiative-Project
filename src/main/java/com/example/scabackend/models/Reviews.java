@@ -27,6 +27,7 @@ public class Reviews {
     private Long userId;
 
     @NotBlank(message = "Review cannot be blank")
+    @Column(length = 1000)
     private String review;
 
     @CreationTimestamp
