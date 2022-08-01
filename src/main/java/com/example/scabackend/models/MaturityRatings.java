@@ -16,7 +16,7 @@ public class MaturityRatings {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Genre name cannot be blank")
+    @NotBlank(message = "Maturity rating name cannot be blank")
     @Column(unique=true)
     private String name;
 
