@@ -30,8 +30,9 @@ public class Movies {
     @NotBlank(message = "Movie description cannot be blank")
     private String description;
 
-    @OneToMany
-    @NotBlank(message = "Movie description cannot be blank")
+    @ManyToMany
+//    @NotBlank(message = "Movie genre cannot be blank")
+    @JsonIgnoreProperties({"id", "createdAt", "updatedAt"})
     private List<Genre> genre;
 
     @NotNull(message = "Maturity rating id is mandatory")

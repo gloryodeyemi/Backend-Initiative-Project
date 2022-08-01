@@ -1,8 +1,11 @@
 package com.example.scabackend.services;
 
+import com.example.scabackend.dto.MovieDto;
+import com.example.scabackend.models.Genre;
 import com.example.scabackend.models.Media;
 import com.example.scabackend.models.Movies;
 import com.example.scabackend.models.Users;
+import com.example.scabackend.repositories.GenreRepository;
 import com.example.scabackend.repositories.MediaRepository;
 import com.example.scabackend.repositories.MoviesRepository;
 import org.springframework.beans.BeanUtils;
@@ -21,11 +24,36 @@ public class MoviesService implements CrudService<Movies, Long>{
     MoviesRepository moviesRepository;
 
     @Autowired
+    GenreRepository genreRepository;
+
+    @Autowired
     MediaRepository mediaRepository;
 
-    public Movies save(Movies movie){
+    public Movies save(Movies object){
+        return null;
+    }
+
+    public Movies save(MovieDto movieDto) {
+        Movies movie = new Movies();
+        BeanUtils.copyProperties(movieDto, movie);
+//        List<Genre> genres = new ArrayList<>();
+//        for (Long i: movieDto.getGenreId()){
+//            Genre genre = genreRepository.findById(i).orElse(null);
+//            genres.add(genre);
+//        }
+        movie.setGenre(getMovieGenre(movieDto.getGenreId()));
         return moviesRepository.save(movie);
     }
+
+    public List<Genre> getMovieGenre(Long[] genreId){
+        List<Genre> genres = new ArrayList<>();
+        for (Long i: genreId){
+            Genre genre = genreRepository.findById(i).orElse(null);
+            genres.add(genre);
+        }
+        return genres;
+    }
+
 
     @Override
     public void delete(Movies object) {
@@ -40,9 +68,10 @@ public class MoviesService implements CrudService<Movies, Long>{
         return moviesRepository.findById(id).orElse(null);
     }
 
-    public ResponseEntity<Movies> update(Long id, Movies movie){
+    public ResponseEntity<Movies> update(Long id, MovieDto movie){
         Movies movieToUpdate = findById(id);
         BeanUtils.copyProperties(movie, movieToUpdate);
+        movieToUpdate.setGenre(getMovieGenre(movie.getGenreId()));
         movieToUpdate.setId(id);
         return ResponseEntity.ok(moviesRepository.save(movieToUpdate));
     }

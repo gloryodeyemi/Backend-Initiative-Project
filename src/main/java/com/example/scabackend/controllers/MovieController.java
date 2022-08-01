@@ -1,5 +1,6 @@
 package com.example.scabackend.controllers;
 
+import com.example.scabackend.dto.MovieDto;
 import com.example.scabackend.models.Movies;
 import com.example.scabackend.models.Users;
 import com.example.scabackend.services.MediaService;
@@ -27,8 +28,8 @@ public class MovieController {
     MediaService mediaService;
 
     @PostMapping
-    public ResponseEntity<Movies> createMovies(@Valid @RequestBody Movies movie) {
-        return ResponseEntity.ok(moviesService.save(movie));
+    public ResponseEntity<Movies> createMovies(@RequestBody MovieDto movieDto) {
+        return ResponseEntity.ok(moviesService.save(movieDto));
     }
 
     @GetMapping("/all")
@@ -47,7 +48,7 @@ public class MovieController {
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<Movies> updateMovie(@PathVariable Long id, @RequestBody Movies movie) {
+    public ResponseEntity<Movies> updateMovie(@PathVariable Long id, @RequestBody MovieDto movie) {
         return moviesService.update(id, movie);
     }
 
