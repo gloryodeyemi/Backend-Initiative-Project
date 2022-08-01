@@ -68,6 +68,7 @@ public class Movies {
     private Media moviePoster;
 
     @OneToMany
+    @JsonIgnoreProperties({"id", "movieId", "createdAt"})
     private List<Reviews> reviews;
 
     @CreationTimestamp
