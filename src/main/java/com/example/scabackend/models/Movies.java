@@ -72,6 +72,12 @@ public class Movies {
     @JsonIgnoreProperties({"id", "movieId", "createdAt"})
     private List<Reviews> reviews;
 
+    @PositiveOrZero(message = "Quantity must be zero or positive")
+    @Column(nullable = false)
+    private int quantity;
+
+    private QStatus status;
+
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(updatable = false)

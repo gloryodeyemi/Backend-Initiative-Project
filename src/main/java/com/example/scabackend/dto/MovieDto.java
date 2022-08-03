@@ -1,10 +1,8 @@
 package com.example.scabackend.dto;
 
-import com.example.scabackend.models.Genre;
 import com.example.scabackend.models.MovieQuality;
 import lombok.Data;
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 public class MovieDto {
@@ -20,4 +18,5 @@ public class MovieDto {
     private String casts;
     private Double rentalFee;
     private LocalDate releaseDate;
+    private int quantity;
 }

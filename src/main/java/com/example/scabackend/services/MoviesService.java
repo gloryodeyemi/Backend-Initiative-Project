@@ -1,13 +1,11 @@
 package com.example.scabackend.services;
 
 import com.example.scabackend.dto.MovieDto;
-import com.example.scabackend.models.Genre;
-import com.example.scabackend.models.Media;
-import com.example.scabackend.models.Movies;
-import com.example.scabackend.models.Users;
+import com.example.scabackend.models.*;
 import com.example.scabackend.repositories.GenreRepository;
 import com.example.scabackend.repositories.MediaRepository;
 import com.example.scabackend.repositories.MoviesRepository;
+import com.example.scabackend.repositories.ReviewsRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,6 +27,9 @@ public class MoviesService implements CrudService<Movies, Long>{
     @Autowired
     MediaRepository mediaRepository;
 
+    @Autowired
+    ReviewsRepository reviewsRepository;
+
     public Movies save(Movies object){
         return null;
     }
@@ -36,12 +37,8 @@ public class MoviesService implements CrudService<Movies, Long>{
     public Movies save(MovieDto movieDto) {
         Movies movie = new Movies();
         BeanUtils.copyProperties(movieDto, movie);
-//        List<Genre> genres = new ArrayList<>();
-//        for (Long i: movieDto.getGenreId()){
-//            Genre genre = genreRepository.findById(i).orElse(null);
-//            genres.add(genre);
-//        }
         movie.setGenre(getMovieGenre(movieDto.getGenreId()));
+        movie.setStatus(getStatus(movieDto.getQuantity()));
         return moviesRepository.save(movie);
     }
 
@@ -52,6 +49,16 @@ public class MoviesService implements CrudService<Movies, Long>{
             genres.add(genre);
         }
         return genres;
+    }
+
+    public QStatus getStatus(int quantity){
+        if (quantity > 5){
+            return QStatus.AVAILABLE;
+        } else if (quantity > 0){
+            return QStatus.LIMITED_QUANTITY;
+        } else {
+            return QStatus.OUT_OF_STOCK;
+        }
     }
 
 
@@ -72,6 +79,7 @@ public class MoviesService implements CrudService<Movies, Long>{
         Movies movieToUpdate = findById(id);
         BeanUtils.copyProperties(movie, movieToUpdate);
         movieToUpdate.setGenre(getMovieGenre(movie.getGenreId()));
+        movieToUpdate.setStatus(getStatus(movie.getQuantity()));
         movieToUpdate.setId(id);
         return ResponseEntity.ok(moviesRepository.save(movieToUpdate));
     }
@@ -95,5 +103,9 @@ public class MoviesService implements CrudService<Movies, Long>{
         movie.setMoviePoster(savedPoster);
         movie.setId(movie.getId());
         moviesRepository.save(movie);
+    }
+
+    public List<Reviews> getMovieReviews(Long movieId) {
+        return reviewsRepository.findByMovieId(movieId);
     }
 }

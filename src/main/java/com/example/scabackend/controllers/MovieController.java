@@ -2,6 +2,7 @@ package com.example.scabackend.controllers;
 
 import com.example.scabackend.dto.MovieDto;
 import com.example.scabackend.models.Movies;
+import com.example.scabackend.models.Reviews;
 import com.example.scabackend.models.Users;
 import com.example.scabackend.services.MediaService;
 import com.example.scabackend.services.MoviesService;
@@ -62,4 +63,10 @@ public class MovieController {
         LinkedHashMap<String, Object> jsonResponse = mediaService.modifyJsonResponse("create", url);
         return new ResponseEntity<>(jsonResponse, HttpStatus.CREATED);
     }
+
+    @GetMapping("/reviews/{id}")
+    public ResponseEntity<List<Reviews>> getMovieReviews(@PathVariable("id") Long id){
+        return ResponseEntity.ok().body(moviesService.getMovieReviews(id));
+    }
+
 }
