@@ -16,12 +16,6 @@ public class ScaBackendApplication {
 
     @Bean
     public Cloudinary cloudinaryConfig() {
-//        Cloudinary cloudinary = null;
-//        Map config = new HashMap();
-//        config.put("cloud_name", "glowcodes");
-//        config.put("api_key", "842777667256463");
-//        config.put("api_secret", "_0H3PyGpJUq3o3qh0mgPWW-ZEmw");
-//        cloudinary = new Cloudinary(config);
         Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", "glowcodes",
         "api_key", "842777667256463",
@@ -32,13 +26,6 @@ public class ScaBackendApplication {
 
     public static void main(String[] args) throws IOException {
         SpringApplication.run(ScaBackendApplication.class, args);
-
-//        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-//                "cloud_name", "glowcodes",
-//        "api_key", "842777667256463",
-//        "api_secret", "_0H3PyGpJUq3o3qh0mgPWW-ZEmw"
-//        ));
-//
 //        File uploadedFile = new File("Animhorse.gif");
 //        Map uploadResult = cloudinary.uploader().upload(uploadedFile, ObjectUtils.emptyMap());
     }

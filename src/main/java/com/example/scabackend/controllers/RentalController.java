@@ -18,7 +18,7 @@ public class RentalController {
     RentalsService rentalsService;
 
     @PostMapping
-    public ResponseEntity<Rentals> createRentals(@Valid @RequestBody Rentals rental) {
+    public ResponseEntity<Rentals> createRentals(@RequestBody Rentals rental) {
         return ResponseEntity.ok(rentalsService.save(rental));
     }
 
